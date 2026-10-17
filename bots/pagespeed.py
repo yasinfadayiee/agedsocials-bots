@@ -25,4 +25,4 @@ for p in PAGES:
     if score < 70:
         slow.append(p)
 print("\n".join(rows))
-notify(("⚠️" if slow else "📱") + " Weekly mobile speed — agedsocials.com", "\n".join(rows))
+notify(("⚠️" if slow else "📱") + f" Weekly mobile speed {__import__('datetime').date.today()} — agedsocials.com", "\n".join(rows))

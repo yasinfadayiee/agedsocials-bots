@@ -54,4 +54,4 @@ pages = q(end - dt.timedelta(days=6), end, ["page"], 10)
 lines.append("\nTop pages:")
 lines += [f"• {r['keys'][0].replace(PROPERTY.rstrip('/'), '')} — {r['clicks']} clicks, {r['impressions']} impr" for r in pages]
 print("\n".join(lines))
-notify("📊 Search Console daily — agedsocials.com", "\n".join(lines))
+notify(f"📊 Search Console {end} — agedsocials.com", "\n".join(lines))

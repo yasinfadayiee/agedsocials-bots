@@ -78,4 +78,4 @@ for k, v in issues.items():
         detail.append(k.upper() + "\n" + "\n".join(v[:30]))
 serious = broken or any(issues[k] for k in ("h1", "canonical", "noindex", "jsonld"))
 print("\n".join(lines))
-notify(("⚠️" if serious else "✅") + " Weekly SEO audit — agedsocials.com", "\n".join(lines) + ("\n\n" + "\n\n".join(detail) if detail else ""))
+notify(("⚠️" if serious else "✅") + f" Weekly SEO audit {__import__('datetime').date.today()} — agedsocials.com", "\n".join(lines) + ("\n\n" + "\n\n".join(detail) if detail else ""))
