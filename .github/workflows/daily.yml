@@ -9,23 +9,32 @@ permissions:
   contents: read
   issues: write
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+  TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+
 jobs:
   bots:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: bots
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Health check
-        working-directory: bots
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
-          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+      - name: Health check (all pages, images, checkout APIs)
         run: python health.py
-      - name: IndexNow ping
+      - name: IndexNow ping for changed pages
         if: always()
-        working-directory: bots
         run: python indexnow.py
+      - name: Search Console report
+        if: always()
+        env:
+          GSC_SERVICE_ACCOUNT: ${{ secrets.GSC_SERVICE_ACCOUNT }}
+        run: |
+          pip install --quiet google-auth requests
+          python gsc_report.py

@@ -44,6 +44,10 @@ def notify(title, text):
         return
     gh, repo = os.environ.get("GITHUB_TOKEN"), os.environ.get("GITHUB_REPOSITORY")
     if gh and repo:
+        auth = {"authorization": f"Bearer {gh}", "accept": "application/vnd.github+json"}
+        st, existing = fetch(f"https://api.github.com/repos/{repo}/issues?state=open&per_page=100", headers=auth)
+        if st == 200 and any(i.get("title") == title[:200] for i in json.loads(existing)):
+            return  # same alert already open: do not spam
         body = json.dumps({"title": title[:200], "body": text[:60000]}).encode()
         fetch(f"https://api.github.com/repos/{repo}/issues", "POST", body, {"authorization": f"Bearer {gh}", "accept": "application/vnd.github+json", "content-type": "application/json"})
         return
