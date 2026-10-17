@@ -1,0 +1,31 @@
+name: Daily site bots
+
+on:
+  schedule:
+    - cron: "15 4 * * *"   # 07:45 Tehran
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  bots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Health check
+        working-directory: bots
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+        run: python health.py
+      - name: IndexNow ping
+        if: always()
+        working-directory: bots
+        run: python indexnow.py
